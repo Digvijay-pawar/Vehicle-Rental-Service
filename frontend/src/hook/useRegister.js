@@ -1,35 +1,39 @@
-import { useState } from "react";
-import { useAuthContext } from "./useAuthContext";
+import { useState } from 'react';
 
 export const useRegister = () => {
     const [error, setError] = useState(null);
-    const [isLoading, setIsLoading] = useState(null);
-    const { dipatch } = useAuthContext();
-    const register = async (userData) => {
-        setError(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const register = async (formData) => {
         setIsLoading(true);
-
-        const response = await fetch("/api/user/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(userData)
-        });
-
-        const json = await response.json();
-
-        if (!json.ok) {
+        setError(null);
+        try {
+            const response = await fetch('http://localhost:5000/api/user/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+            });
+            const data = await response.json();
+            console.log("asd",response, data)
+            if (!response.ok) {
+                const errorMessage = data.message || 'Registration failed.';
+                if (data.errorCode === 'DUPLICATE_EMAIL') {
+                    setError('Email already in use.');
+                } else if (data.errorCode === 'DUPLICATE_PHONE') {
+                    setError('Phone number already in use.');
+                } else {
+                    setError(errorMessage);
+                }
+                return false;
+            }
+            return true;
+        } catch (err) {
+            setError(err.message);
+            return false;
+        } finally {
             setIsLoading(false);
-            setError(json.error);
-            return;
         }
+    };    
 
-        localStorage.setItem("user", JSON.stringify(json));
-
-        dipatch({ type: "LOGIN", payload: json });
-        setIsLoading(false);
-    }
-
-    return { register, error, isLoading, setError};
-}
+    return { register, error, isLoading, setError };
+};

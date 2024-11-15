@@ -21,12 +21,6 @@ const registerSchema = z.object({
     email: z.string().email("Invalid email format"), // Ensures email is a valid email format
     password: z.string().min(6, "Password must be at least 6 characters"), // Password must be 6+ characters
     phoneNumber: z.string().regex(/^\d{10}$/, "Phone number must be 10 digits"), // Phone number must be exactly 10 digits
-    address: z.object({
-        street: z.string().min(1, "Street is required"),
-        city: z.string().min(1, "City is required"),
-        state: z.string().min(1, "State is required"),
-        zipcode: z.string().regex(/^\d{6}$/, "Zipcode must be 6 digits")
-    }).refine(address => Object.keys(address).length > 0, "Address cannot be empty") // Validate address is non-empty
 });
 
 // Define the login schema using Zod
@@ -67,7 +61,6 @@ const registerUser = async (req, res) => {
             email,
             password: hashedPassword,
             phoneNumber,
-            address,
             isVerified: false // Initially the user is not verified
         });
 
