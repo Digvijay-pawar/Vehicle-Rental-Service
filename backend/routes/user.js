@@ -8,5 +8,7 @@ Router
     .post("/login", userControllers.loginUser)
     .get("/profile",authorize, userControllers.getUserProfile)
     .get("/verify-email", userControllers.verifyEmail)
+    .post("/forgot-password", userControllers.forgotPassword)
+    .post("/reset-password",authorize, userControllers.resetPassword)
     
 export default Router;

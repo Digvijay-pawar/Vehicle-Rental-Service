@@ -10,7 +10,9 @@ export const useRegister = () => {
         try {
             const response = await fetch('http://localhost:5000/api/user/register', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(formData),
             });
             const data = await response.json();
@@ -31,9 +33,9 @@ export const useRegister = () => {
             setError(err.message);
             return false;
         } finally {
-            setIsLoading(false);
+            setTimeout(() => {setIsLoading(false)}, 1000)
         }
     };    
 
-    return { register, error, isLoading, setError };
+    return { register, error, setIsLoading, isLoading, setError };
 };

@@ -260,4 +260,80 @@ const getUserProfile = async (req, res) => {
     }
 };
 
-export default { registerUser, loginUser, getUserProfile, verifyEmail };
+// Forgot Password Controller
+const forgotPassword = async (req, res) => {
+  try {
+      const { email } = req.body;
+
+      // Check if email exists
+      const user = await User.findOne({ email });
+      if (!user) {
+          return res.status(404).json({ message: "User not found" });
+      }
+
+      // Generate a password reset token
+      const resetToken = jwt.sign(
+          { userId: user._id },
+          process.env.JWT_SECRET,
+          { expiresIn: "1h" }
+      );
+
+      // Password reset link
+      const resetLink = `http://localhost:5173/reset-password?token=${resetToken}`;
+
+      // Send email with password reset link
+      await transporter.sendMail({
+          to: email,
+          subject: "Password Reset Request",
+          html: `
+      <html>
+        <body style="font-family: Arial, sans-serif; text-align: center; background-color: #f7f7f7; padding: 20px;">
+          <div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+            <h2 style="color: #333;">Password Reset Request</h2>
+            <p style="color: #555;">You requested a password reset for your account.</p>
+            <p style="color: #555;">Click the button below to reset your password:</p>
+            <a href="${resetLink}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
+            <p style="color: #999; margin-top: 20px;">If you did not request this, please ignore this email.</p>
+            <p style="color: #999;">&copy; ${new Date().getFullYear()} Your Company</p>
+          </div>
+        </body>
+      </html>
+      `
+      });
+
+      res.json({ message: "Password reset link sent to your email." });
+  } catch (error) {
+      res.status(500).json({ message: "Error sending password reset email", error });
+  }
+};
+
+// Reset Password Controller
+const resetPassword = async (req, res) => {
+  try {
+      const { token } = req.query;
+      const { password } = req.body;
+      console.log(token, password)
+      // Verify the token
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const userId = decoded.userId;
+
+      // Check if user exists
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: "User not found" });
+      }
+
+      // Hash the new password
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Update the user's password
+      user.password = hashedPassword;
+      await user.save();
+
+      res.json({ message: "Password reset successful" });
+  } catch (error) {
+      res.status(500).json({ message: "Error resetting password", error });
+  }
+};
+
+export default { registerUser, loginUser, getUserProfile, verifyEmail, forgotPassword, resetPassword};

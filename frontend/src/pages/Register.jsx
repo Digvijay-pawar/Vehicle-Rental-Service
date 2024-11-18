@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react';
-import { Link, useNavigate} from 'react-router-dom';
+import { Link} from 'react-router-dom';
 import { useRegister } from '../hook/useRegister';
 
 function Register() {
@@ -15,10 +15,9 @@ function Register() {
         password: '',
         confirmPassword: ''
     });
-    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [result, setResult] = useState(false)
-    const { register, error, isLoading, setError } = useRegister();
+    const { register, error, isLoading, setIsLoading, setError } = useRegister();
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -46,7 +45,11 @@ function Register() {
         const res = await register(formData); // Await the result
         console.log(res)
         if (res) {
-            setTimeout(() => setResult(true), 1000); 
+            setIsLoading(true)
+            setTimeout(() => {
+                setIsLoading(false)
+                setResult(true)
+            }, 1000)
         }
     };
     
@@ -107,7 +110,7 @@ function Register() {
                         can log in to your account.
                     </p>
                     <Link
-                        to="/login"
+                        to="/"
                         className="btn btn-primary text-xl px-6 py-3 rounded-lg"
                     >
                         Go to Login
@@ -239,7 +242,7 @@ function Register() {
                         <> <div className="divider">OR</div>
                             <div className="text-center">
                                 <p>Don't have an account?</p>
-                                <Link to="/login" className="link link-primary">Login</Link>
+                                <Link to="/" className="link link-primary">Login</Link>
                             </div>
                         </>
                     )}
