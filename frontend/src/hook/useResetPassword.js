@@ -9,7 +9,7 @@ export const useResetPassword = () => {
         setError(null);
 
         try {
-            const response = await fetch(`http://localhost:5000/api/user/reset-password?token=${formData.token}`, {
+            const response = await fetch(`vehicle-rental-service-k4mw2w4uo-digvijays-projects-155f00da.vercel.app/api/user/reset-password?token=${formData.token}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

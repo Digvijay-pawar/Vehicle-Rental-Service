@@ -1,25 +1,5 @@
 import mongoose from "mongoose";
 
-// Define address schema
-const addressSchema = new mongoose.Schema({
-    street: {
-        type: String,
-        required: true
-    },
-    city: {
-        type: String,
-        required: true
-    },
-    state: {
-        type: String,
-        required: true
-    },
-    zipcode: {
-        type: Number,
-        required: true
-    }
-});
-
 // Define user schema
 const userSchema = new mongoose.Schema({
     fullName: {
@@ -42,10 +22,6 @@ const userSchema = new mongoose.Schema({
         type: Number,
         required: true,
         unique: true
-    },
-    address: {
-        type: addressSchema,
-        required: false
     },
     isVerified: {
         type: Boolean,

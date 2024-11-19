@@ -24,7 +24,7 @@ function Login() {
             setIsLoading(true)
             setTimeout(() => {
                 setIsLoading(false)
-                navigate('/home');
+                navigate('/');
             }, 1000);
         }
     };
