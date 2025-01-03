@@ -10,6 +10,8 @@ import Careers from './components/Careers';
 import Profile from './pages/Profile';
 import Header from './components/Header';
 import { AuthContext } from './context/authContext';
+import SignUp from './pages/SignUp';
+import SignIn from './pages/SignIn';
 
 function App() {
   const { getProfile } = useProfile();
@@ -41,8 +43,8 @@ function App() {
 
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
+        <Route path='/login' element={<SignIn />} />
+        <Route path='/register' element={<SignUp />} />
         <Route path='/reset-password' element={<ResetPassword />} />
         <Route path='/careers' element={<Careers />} />
         <Route path='/profile' element={isLogin ? <Profile /> : <Navigate path={'/'}/>} />

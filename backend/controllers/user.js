@@ -37,7 +37,7 @@ const profileSchema = z.object({
 // Controller to handle user registration
 const registerUser = async (req, res) => {
     try {
-        const { fullName, email, password, phoneNumber, address } = req.body;
+        const { fullName, email, password, phoneNumber } = req.body;
 
         // Validate the incoming request data with Zod
         const parsedData = registerSchema.safeParse(req.body);
